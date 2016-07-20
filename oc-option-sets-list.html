@@ -1,0 +1,44 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<!--
+`oc-option-sets-list`
+Element displaying a list of option sets
+
+@demo demo/index.html 
+-->
+
+<dom-module id="oc-option-sets-list">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+
+  <template>
+    <paper-button on-tap="_onCreateTapped">Create</paper-button>
+    <paper-button on-tap="_onEditTapped">Edit</paper-button>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'oc-option-sets-list',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'oc-option-sets-list',
+        },
+      },
+
+      _onCreateTapped: function() {
+        this.fire('create');
+      },
+
+      _onEditTapped: function() {
+        this.fire('edit', 1111)
+      }
+    });
+  </script>
+</dom-module>
