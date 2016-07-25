@@ -4,7 +4,13 @@
   "main": "oc-option-sets-list.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
-    "paper-button": "PolymerElements/paper-button#^1.0.12"
+    "paper-button": "PolymerElements/paper-button#^1.0.12",
+    "iron-data-table": "1.0.0",
+    "oc-iron-data-table-styles": "git://github.com/oc-elements/oc-iron-data-table-styles.git#^0.1.0",
+    "oc-paginator": "git://github.com/oc-elements/oc-paginator.git#1.x",
+    "oc-grid-controls": "git://github.com/oc-elements/oc-grid-controls#1.x",
+    "oc-product-option-api": "git://github.com/oc-elements/oc-product-option-api#1.x",
+    "paper-material": "PolymerElements/paper-material#^1.0.6"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

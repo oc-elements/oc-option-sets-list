@@ -16,8 +16,38 @@ Element displaying a list of option sets
   </style>
 
   <template>
-    <paper-button on-tap="_onCreateTapped">Create</paper-button>
-    <paper-button on-tap="_onEditTapped">Edit</paper-button>
+
+    <oc-product-option-api id="optionsApi" ></oc-product-option-api>
+
+    <paper-material>
+      <paper-button on-tap="_onCreateTapped">Create</paper-button>
+      <oc-grid-controls data="[[ _optionSets ]]">
+        <iron-data-table>
+          <data-table-column name="Name" sort-by="name">
+            <template>[[item.name]]</template>
+          </data-table-column>
+          <data-table-column name="Display Name" sort-by="displayName">
+            <template>[[item.displayName]]</template>
+          </data-table-column>
+          <data-table-column name="Options" sort-by="options">
+            <template is="dom-repeat" item="[[item.options]]" as="option">[[option.name]]</template>
+          </data-table-column>
+          <data-table-column name="Enabled" sort-by="enabled">
+            <template>
+              <paper-checkbox checked="[[item.enabled]]" on-change="_enabledHandler"></paper-checkbox>
+            </template>
+          </data-table-column>
+          <data-table-column name="Actions">
+            <template>
+              <div data-option-object$="{{item}}">
+                <paper-icon-button id="edit" icon="create" title="Edit Set"  on-tap="_actionHandler"></paper-icon-button>
+                <paper-icon-button id="clone" icon="content-copy" title="Clone Set" data-options-id$="{{item.id}}" on-tap="_actionHandler"></paper-icon-button>
+              </div>
+            </template>
+          </data-table-column>
+        </iron-data-table>
+      </oc-grid-controls>
+    </paper-material>
   </template>
 
   <script>
@@ -26,19 +56,38 @@ Element displaying a list of option sets
       is: 'oc-option-sets-list',
 
       properties: {
-        prop1: {
-          type: String,
-          value: 'oc-option-sets-list',
-        },
+        organisationId: Number,
+        loading: {
+          type: Boolean,
+          value: false,
+          notify: true
+        }
+      },
+
+      observers: [
+        'refresh(organisationId)'
+      ],
+
+      refresh: function() {
+        this.loading = true;
+        this.$.optionsApi.getOptionSets()
+                .then(function(request) {
+                  this._optionSets = request.response.results;
+                  this._optionSetsCount = request.response.count;
+                }.bind(this))
+                .catch(this.fire.bind(this, 'option-set-error', 'Failed to load option sets'))
+                .finally(this.set.bind(this, 'loading', false));
       },
 
       _onCreateTapped: function() {
         this.fire('create');
       },
 
-      _onEditTapped: function() {
-        this.fire('edit', {id:12})
-      }
+      _actionHandler : function(e) {
+        var optionObj = Polymer.dom(event).localTarget.parentElement.getAttribute('data-option-object'),
+                action = e.target.getAttribute('id');
+        this.fire(action, optionObj);
+      },
     });
   </script>
 </dom-module>
