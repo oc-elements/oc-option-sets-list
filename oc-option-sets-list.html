@@ -1,17 +1,28 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
+<link rel="import" href="../iron-data-table/iron-data-table.html">
+<link rel="import" href="../oc-grid-controls/oc-grid-controls.html">
+<link rel="import" href="../oc-product-option-api/oc-product-option-api.html">
+
 <!--
 `oc-option-sets-list`
 Element displaying a list of option sets
 
-@demo demo/index.html 
+@demo demo/index.html
 -->
 
 <dom-module id="oc-option-sets-list">
   <style>
     :host {
       display: block;
+    }
+    paper-material {
+      background-color: #fff;
+      padding: 10px;
+    }
+    .new-option-set-button {
+      margin: 10px;
     }
   </style>
 
@@ -20,8 +31,8 @@ Element displaying a list of option sets
     <oc-product-option-api id="optionsApi" ></oc-product-option-api>
 
     <paper-material>
-      <paper-button on-tap="_onCreateTapped">Create</paper-button>
-      <oc-grid-controls data="[[ _optionSets ]]">
+      <paper-button class="new-option-set-button" on-tap="_onCreateTapped">New Option Set</paper-button>
+      <oc-grid-controls data="[[ _optionSets ]]" total-count="[[ _optionSetsCount ]]">
         <iron-data-table>
           <data-table-column name="Name" sort-by="name">
             <template>[[item.name]]</template>
@@ -39,9 +50,9 @@ Element displaying a list of option sets
           </data-table-column>
           <data-table-column name="Actions">
             <template>
-              <div data-option-object$="{{item}}">
+              <div data-option-object$="[[ item ]]">
                 <paper-icon-button id="edit" icon="create" title="Edit Set"  on-tap="_actionHandler"></paper-icon-button>
-                <paper-icon-button id="clone" icon="content-copy" title="Clone Set" data-options-id$="{{item.id}}" on-tap="_actionHandler"></paper-icon-button>
+                <paper-icon-button id="clone" icon="content-copy" title="Clone Set" on-tap="_actionHandler"></paper-icon-button>
               </div>
             </template>
           </data-table-column>
@@ -84,10 +95,10 @@ Element displaying a list of option sets
       },
 
       _actionHandler : function(e) {
-        var optionObj = Polymer.dom(event).localTarget.parentElement.getAttribute('data-option-object'),
+        var optionObj = JSON.parse(Polymer.dom(event).localTarget.parentElement.getAttribute('data-option-object')),
                 action = e.target.getAttribute('id');
         this.fire(action, optionObj);
-      },
+      }
     });
   </script>
 </dom-module>
