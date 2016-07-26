@@ -3,7 +3,6 @@
 
 <link rel="import" href="../iron-data-table/iron-data-table.html">
 <link rel="import" href="../oc-grid-controls/oc-grid-controls.html">
-<link rel="import" href="../oc-product-option-api/oc-product-option-api.html">
 
 <!--
 `oc-option-sets-list`
@@ -27,13 +26,10 @@ Element displaying a list of option sets
   </style>
 
   <template>
-
-    <oc-product-option-api id="optionsApi" ></oc-product-option-api>
-
     <paper-material>
-      <paper-button class="new-option-set-button" on-tap="_onCreateTapped">New Option Set</paper-button>
-      <oc-grid-controls data="[[ _optionSets ]]" total-count="[[ _optionSetsCount ]]">
-        <iron-data-table>
+      <paper-button class="new-option-set-button" on-tap="_onCreateTapped" hidden$="[[ actionsHidden ]]">New Option Set</paper-button>
+      <oc-grid-controls data="[[ items ]]" total-count="[[ totalItems ]]">
+        <iron-data-table multi-select$="[[ multiSelect ]]" selected-items="{{ selectedItems }}" current-page="[[ currentPage ]]">
           <data-table-column name="Name" sort-by="name">
             <template>[[item.name]]</template>
           </data-table-column>
@@ -48,7 +44,7 @@ Element displaying a list of option sets
               <paper-checkbox checked="[[item.enabled]]" on-change="_enabledHandler"></paper-checkbox>
             </template>
           </data-table-column>
-          <data-table-column name="Actions">
+          <data-table-column name="Actions" hidden$="[[ actionsHidden ]]">
             <template>
               <div data-option-object$="[[ item ]]">
                 <paper-icon-button id="edit" icon="create" title="Edit Set"  on-tap="_actionHandler"></paper-icon-button>
@@ -67,27 +63,22 @@ Element displaying a list of option sets
       is: 'oc-option-sets-list',
 
       properties: {
-        organisationId: Number,
-        loading: {
+        actionsHidden: {
           type: Boolean,
-          value: false,
+          value: false
+        },
+        multiSelect: {
+          type: Boolean,
+          value: false
+        },
+        selectedItems: {
+          type: Array,
+          value: [],
           notify: true
-        }
-      },
-
-      observers: [
-        'refresh(organisationId)'
-      ],
-
-      refresh: function() {
-        this.loading = true;
-        this.$.optionsApi.getOptionSets()
-                .then(function(request) {
-                  this._optionSets = request.response.results;
-                  this._optionSetsCount = request.response.count;
-                }.bind(this))
-                .catch(this.fire.bind(this, 'option-set-error', 'Failed to load option sets'))
-                .finally(this.set.bind(this, 'loading', false));
+        },
+        items: Array,
+        totalItems: Number,
+        currentPage: Number
       },
 
       _onCreateTapped: function() {
