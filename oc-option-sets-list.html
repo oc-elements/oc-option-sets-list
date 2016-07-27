@@ -28,7 +28,7 @@ Element displaying a list of option sets
   <template>
     <paper-material>
       <paper-button class="new-option-set-button" on-tap="_onCreateTapped" hidden$="[[ actionsHidden ]]">New Option Set</paper-button>
-      <oc-grid-controls data="[[ items ]]" total-count="[[ totalItems ]]">
+      <oc-grid-controls data="[[ items ]]" total-count="[[ totalItems ]]" num-entries="[[ pageSize ]]">
         <iron-data-table multi-select$="[[ multiSelect ]]" selected-items="{{ selectedItems }}" current-page="[[ currentPage ]]">
           <data-table-column name="Name" sort-by="name">
             <template>[[item.name]]</template>
@@ -78,7 +78,12 @@ Element displaying a list of option sets
         },
         items: Array,
         totalItems: Number,
+        pageSize: Number,
         currentPage: Number
+      },
+
+      _onPageRequest: function(event) {
+        this.fire('page-request', event);
       },
 
       _onCreateTapped: function() {
