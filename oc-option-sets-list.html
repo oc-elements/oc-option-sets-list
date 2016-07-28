@@ -27,9 +27,18 @@ Element displaying a list of option sets
 
   <template>
     <paper-material>
-      <paper-button class="new-option-set-button" on-tap="_onCreateTapped" hidden$="[[ actionsHidden ]]">New Option Set</paper-button>
+      <div hidden$="[[ actionsHidden ]]">
+        <paper-button id="_newOptionSetButton"class="new-option-set-button" on-tap="_onCreateTapped">New Option Set</paper-button>
+      </div>
       <oc-grid-controls data="[[ items ]]" total-count="[[ totalItems ]]" num-entries="[[ pageSize ]]">
-        <iron-data-table multi-select$="[[ multiSelect ]]" selected-items="{{ selectedItems }}" current-page="[[ currentPage ]]">
+        <iron-data-table
+                id="dataTable"
+                selection-enabled="[[ multiSelect ]]"
+                multi-selection="[[ multiSelect ]]"
+                selected-items="{{ selectedItems }}"
+                selected-item="{{ _selectedItem }}"
+                current-page="[[ currentPage ]]"
+                loading="{{ loading }}">
           <data-table-column name="Name" sort-by="name">
             <template>[[item.name]]</template>
           </data-table-column>
@@ -63,6 +72,10 @@ Element displaying a list of option sets
       is: 'oc-option-sets-list',
 
       properties: {
+        loading: {
+          type: Boolean,
+          notify: true
+        },
         actionsHidden: {
           type: Boolean,
           value: false
@@ -94,6 +107,10 @@ Element displaying a list of option sets
         var optionObj = JSON.parse(Polymer.dom(event).localTarget.parentElement.getAttribute('data-option-object')),
                 action = e.target.getAttribute('id');
         this.fire(action, optionObj);
+      },
+
+      selectItem: function(item) {
+        this.$.dataTable.selectItem(item);
       }
     });
   </script>
