@@ -2,6 +2,8 @@
 <link rel="import" href="../paper-button/paper-button.html">
 
 <link rel="import" href="../iron-data-table/iron-data-table.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../oc-grid-controls/oc-grid-controls.html">
 
 <!--
@@ -19,6 +21,7 @@ Element displaying a list of option sets
     paper-material {
       background-color: #fff;
       padding: 10px;
+      display: block;
     }
     .new-option-set-button {
       margin: 10px;
@@ -28,7 +31,7 @@ Element displaying a list of option sets
   <template>
     <paper-material>
       <div hidden$="[[ actionsHidden ]]">
-        <paper-button id="_newOptionSetButton"class="new-option-set-button" on-tap="_onCreateTapped">New Option Set</paper-button>
+        <paper-button raised id="_newOptionSetButton"class="new-option-set-button" on-tap="_onCreateTapped">New Option Set</paper-button>
       </div>
       <oc-grid-controls data="[[ items ]]" total-count="[[ totalItems ]]" num-entries="[[ pageSize ]]">
         <iron-data-table
@@ -46,7 +49,7 @@ Element displaying a list of option sets
             <template>[[item.displayName]]</template>
           </data-table-column>
           <data-table-column name="Options" sort-by="options">
-            <template is="dom-repeat" item="[[item.options]]" as="option">[[option.name]]</template>
+            <template>[[_optionsCalc(item.options)]]</template>
           </data-table-column>
           <data-table-column name="Enabled" sort-by="enabled">
             <template>
@@ -111,6 +114,12 @@ Element displaying a list of option sets
 
       selectItem: function(item) {
         this.$.dataTable.selectItem(item);
+      },
+
+      _optionsCalc : function(options) {
+        var optionNames = options.map(function(option){ return option.name});
+
+        return (options.length) ? optionNames.join(', ') : "No Options"
       }
     });
   </script>
